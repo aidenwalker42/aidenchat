@@ -5,7 +5,9 @@ let client, channel, username, activeUser;
 client = new StreamChat('2zqj9j55gz8v');
 
 async function generateToken(username) {
-  const { token } = (await axios.get(`https://aidenchat.herokuapp.com/token?username=${username}`)).data;
+    const heroku = "https://aidenchat.herokuapp.com"
+    const local = "http://localhost:8800"
+  const { token } = (await axios.get(`${heroku}/token?username=${username}`)).data;
   console.log(token) //token is equal to the data of the get request
   return token; //return to initalizeClient
 }
@@ -31,7 +33,8 @@ async function initializeClient() {
     }
     await listUsers();
     await client.on(event => {
-        if(event.type === "user.presence.changed"){
+        console.log(event);
+        if(event.type === "user.presence.changed" || event.type === "notification.added_to_channel"){
             listUsers();
         }
     })
