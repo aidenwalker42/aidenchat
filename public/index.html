@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css" />
+    <title>Aiden Chat</title>
+</head>
+<body>
+    <div class="main-container">
+        <div class="login" id="login-block">
+          <input
+            type="text"
+            id="user-login-input"
+            placeholder="Enter your username (should be unique)"
+          />
+          <div id="exists"></div>
+        </div>
+        <div class="chat-container">
+          <div class="users" id="users"></div>
+          <div class="message-container">
+            <div class="chat-body" id="messages"></div>
+            <div class="message-box">
+              <input
+                type="text"
+                id="message-input"
+                placeholder="Enter your message..."
+              />
+              <button id="logout">Log out</button>
+            </div>
+            <button id="delete">DELETE ACCOUNT FOREVER</button>
+          </div>
+        </div>
+      </div>
+      <!-- JavaScipt Stream SDK -->
+      <script src="https://cdn.jsdelivr.net/npm/stream-chat@1.2.2/dist/browser.full-bundle.min.js"></script>
+      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+      <script src="./custom.js"></script>
+</body>
+</html>
