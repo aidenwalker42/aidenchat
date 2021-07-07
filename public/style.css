@@ -114,3 +114,6 @@
   #logout {
       margin: 10px;
   }
+  #channel-name {
+    text-align: center;
+  }

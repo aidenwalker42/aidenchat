@@ -7,7 +7,7 @@ client = new StreamChat('2zqj9j55gz8v');
 async function generateToken(username) {
     const heroku = "https://aidenchat.herokuapp.com"
     const local = "http://localhost:8800"
-  const { token } = (await axios.get(`${heroku}/token?username=${username}`)).data;
+  const { token } = (await axios.get(`${local}/token?username=${username}`)).data;
   console.log(token) //token is equal to the data of the get request
   return token; //return to initalizeClient
 }
@@ -34,8 +34,15 @@ async function initializeClient() {
     await listUsers();
     await client.on(event => {
         console.log(event);
-        if(event.type === "user.presence.changed" || event.type === "notification.added_to_channel" || event.type ==="message.new"){
+        if(event.type === "user.presence.changed" || event.type ==="message.new"){
             listUsers();
+        }
+        if(event.type === "notification.added_to_channel")
+        {
+          if(username !== event.channel.created_by.id){
+            document.getElementById("whoisin").innerHTML = event.channel.created_by.id + " entered your channel!"
+          }
+          listUsers();
         }
     })
     
@@ -109,6 +116,9 @@ function populateUsers(users) {
     // remove all previous messages in the message container...
     const messageContainer = document.getElementById('messages');
     messageContainer.innerHTML = '';
+
+    const channelName = document.getElementById("channel-name");
+    channelName.innerHTML = 'Chatting to '+activeUser
 
     await initializeChannel([username, userPayload.id]);
   
