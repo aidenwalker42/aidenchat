@@ -7,7 +7,7 @@ client = new StreamChat('2zqj9j55gz8v');
 async function generateToken(username) {
     const heroku = "https://aidenchat.herokuapp.com"
     const local = "http://localhost:8800"
-  const { token } = (await axios.get(`${local}/token?username=${username}`)).data;
+  const { token } = (await axios.get(`${heroku}/token?username=${username}`)).data;
   console.log(token) //token is equal to the data of the get request
   return token; //return to initalizeClient
 }
