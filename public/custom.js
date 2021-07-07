@@ -34,7 +34,7 @@ async function initializeClient() {
     await listUsers();
     await client.on(event => {
         console.log(event);
-        if(event.type === "user.presence.changed" || event.type === "notification.added_to_channel"){
+        if(event.type === "user.presence.changed" || event.type === "notification.added_to_channel" || event.type ==="message.new"){
             listUsers();
         }
     })
@@ -51,6 +51,7 @@ user.addEventListener('keyup', function(event) {
 });
 
 checkAuthState();
+
 
 async function checkAuthState() {
   if (!user.value) { //if nothing was entered
@@ -127,6 +128,8 @@ function populateUsers(users) {
       members: members,
       session: 8 // custom field, you can add as many as you want
     });
+
+    console.log(channel);
   
     await channel.watch();
 
