@@ -34,7 +34,7 @@ async function initializeClient() {//3
     await listUsers(); //4
     await client.on(event => {
         console.log(event);
-        if(event.type === "user.presence.changed" || event.type ==="message.new"){
+        if(event.type === "user.presence.changed" || event.type ==="message.new" || event.type === "health.check"){
             listUsers();
         }
         if(event.type === "notification.added_to_channel")
