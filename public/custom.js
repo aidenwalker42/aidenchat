@@ -2,7 +2,7 @@
 // global vairables....
 let client, channel, username, activeUser;
 
-client = new StreamChat('2zqj9j55gz8v');
+client = new StreamChat('2zqj9j55gz8v'); //object
 
 async function generateToken(username) {
     const heroku = "https://aidenchat.herokuapp.com"
@@ -12,15 +12,15 @@ async function generateToken(username) {
   return token; //return to initalizeClient
 }
 
-async function initializeClient() {
-    const token = await generateToken(username); //set token to the token value of the username
+async function initializeClient() {//3
+    const token = await generateToken(username);//4 //set token to the token value of the username
     
     try{
-        await client.setUser(
+        await client.setUser(//set username in database
         {
             id: username,
             name: 'The user name', // Update this name dynamically
-            image: 'https://bit.ly/2u9Vc0r' // user image
+            image: '' // user image optional
         },
         token
         ); // token generated from Node server
@@ -31,7 +31,7 @@ async function initializeClient() {
         console.log(e.message);
         return "error";
     }
-    await listUsers();
+    await listUsers(); //4
     await client.on(event => {
         console.log(event);
         if(event.type === "user.presence.changed" || event.type ==="message.new"){
@@ -53,14 +53,14 @@ const user = document.getElementById('user-login-input');
 
 user.addEventListener('keyup', function(event) {
   if (event.key === 'Enter') {
-    checkAuthState();
+    checkAuthState();//2
   }
 });
 
-checkAuthState();
+checkAuthState();//1
 
 
-async function checkAuthState() {
+async function checkAuthState() {//2
   if (!user.value) { //if nothing was entered
     document.getElementById('login-block').style.display = 'grid';
     document.getElementsByClassName('chat-container')[0].style.display = 'none';
@@ -68,31 +68,32 @@ async function checkAuthState() {
     username = user.value; //set global variable
 
     //initialize user, returns client
-    if(await initializeClient() !== "error")
+    if(await initializeClient() !== "error") //3
     {
     document.getElementsByClassName('chat-container')[0].style.display = 'grid'; //display chat
     document.getElementById('login-block').style.display = 'none'; //no more login
     }
     else{
+        username = "";
         client.disconnect();
     }
   }
 }
 
-function populateUsers(users) {
-    // remove the current users from the list of users
-    const otherUsers = users.filter(user => user.id !== username && user.online);
+function populateUsers(users) {//5
+    // remove the current user from the list of users
+    const otherUsers = users.filter(user => user.id !== username && user.online);//filter only online users
     console.log(otherUsers)
   
-    const usersElement = document.getElementById('users');
-    usersElement.innerHTML = "";
-    otherUsers.map(user => {
+    const usersElement = document.getElementById('users'); //user list
+    usersElement.innerHTML = "";//set to nothing
+    otherUsers.map(user => {//map every user from other users array to a new div
       const userElement = document.createElement('div');
   
       userElement.className = 'user';
       userElement.id = user.id;
       userElement.textContent = user.id;
-      userElement.onclick = () => selectUserHandler(user);
+      userElement.onclick = () => selectUserHandler(user);//when you click the div //6
   
       usersElement.append(userElement);
     });
@@ -101,7 +102,7 @@ function populateUsers(users) {
   async function selectUserHandler(userPayload) {
     if (activeUser === userPayload.id) return; // current active user, so do not proceed...
   
-    activeUser = userPayload.id;
+    activeUser = userPayload.id; 
   
     // remove the 'active' class from all users
     const allUsers = document.getElementsByClassName('user');
@@ -117,18 +118,19 @@ function populateUsers(users) {
     const messageContainer = document.getElementById('messages');
     messageContainer.innerHTML = '';
 
+    // say who you are chatting to
     const channelName = document.getElementById("channel-name");
     channelName.innerHTML = 'Chatting to '+activeUser
 
-    await initializeChannel([username, userPayload.id]);
+    await initializeChannel([username, userPayload.id]);//7
   
     // []
   }
 
-  async function listUsers() {
+  async function listUsers() {//4
     const filters = {};
-    const response = await client.queryUsers(filters);
-    populateUsers(response.users);
+    const response = await client.queryUsers(filters);//get users
+    populateUsers(response.users);//5
     return response;
   }
 
@@ -136,15 +138,16 @@ function populateUsers(users) {
     //members => array of users, [user1, user2]
     channel = client.channel('messaging', {
       members: members,
-      session: 8 // custom field, you can add as many as you want
+      session: 8 // custom field, you can add as many as you want //*
     });
+    //creates channel
 
     console.log(channel);
   
     await channel.watch();
 
     channel.on('message.new', event => {
-        appendMessage(event.message);
+        appendMessage(event.message); //when message.new event is recieved, display their message
     });
     channel.state.messages.forEach(message => {
         appendMessage(message);
@@ -181,7 +184,7 @@ function populateUsers(users) {
 
   async function sendMessage(message) {
     return await channel.sendMessage({
-      text: message
+      text: message //sends an event object through the api to another user in the channel
     });
   }
 
@@ -189,8 +192,13 @@ const inputElement = document.getElementById('message-input');
 
 inputElement.addEventListener('keyup', function(event) {
   if (event.key === 'Enter') {
+    if(!activeUser){
+      document.getElementById("channel-name").innerHTML = "Please select a user to chat to";
+    }
+    else{
     sendMessage(inputElement.value);
     inputElement.value = '';
+    }
   }
 });
 
