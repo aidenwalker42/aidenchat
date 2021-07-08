@@ -35,14 +35,14 @@ async function initializeClient() {//3
     await client.on(event => {
         console.log(event);
         if(event.type === "user.presence.changed" || event.type ==="message.new" || event.type === "health.check"){
-            listUsers();
+           await listUsers();
         }
         if(event.type === "notification.added_to_channel")
         {
           if(username !== event.channel.created_by.id){
             document.getElementById("whoisin").innerHTML = event.channel.created_by.id + " entered your channel!"
           }
-          listUsers();
+           await listUsers();
         }
     })
     
